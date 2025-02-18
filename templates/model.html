@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EDFS</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+    />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="static/style.css" />
+
+     <!-- DataTable CSS -->
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+     <!-- Optional Responsive Extension CSS -->
+     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
+    <style>
+
+    </style>
+  </head>
+
+  <body>
+     <!-- Start Navbar -->
+     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#"
+          ><i class="bi bi-command"></i>&nbsp;&nbsp;EDFS</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('index') }}#welcoming-section">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('index') }}#about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('index') }}#team">Team</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('index') }}#contact">Contact</a>
+            </li>
+            <li class="nav-item dropdown"></li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                {% if username %} 
+                <i class="bi bi-person-circle"></i>{{ username }} {% else %}
+                <i class="bi bi-person-circle"></i> Login {% endif %}
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <button class="theme-toggle" onclick="toggleTheme()">
+                <i id="theme-icon" class="fas fa-moon"></i>
+                <!-- Moon icon for dark theme -->
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+      <!-- End Navbar -->
+      <div class="container p-5">
+        <div class="container pt-3">
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-12 date-container">
+                    <h2 class="mb-4 text-center" style="color: var(--text-color);">Select Past Range</h2>
+    
+                    <div class="row">
+                        <div class="col-md-3 mb-3"></div>
+                        <div class="col-md-6 mb-3">
+                            <form method="POST">
+                                <!-- Model Selection Dropdown -->
+                                <div class="mb-3">
+                                    <label for="model_type" class="form-label">Select Model</label>
+                                    <select name="model_type" id="model_type" class="form-control" required>
+                                        <option value="daily">Daily</option>
+                                        <option value="hourly">Hourly</option>
+                                        <option value="5min">5-Minute</option>
+                                    </select>
+                                </div>
+    
+                                <!-- Date Input -->
+                                <div class="mb-3">
+                                    <label for="date" class="form-label">Date</label>
+                                    <input type="date" name="date" class="form-control" required>
+                                </div>
+    
+                                <!-- Predict Button -->
+                                <button class="btn btn-warning mt-3" type="submit">Predict</button>
+                            </form> 
+                        </div>
+                        <div class="col-md-3 mb-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+                        
+                        <!-- Graph Display -->
+                        <div class="col-md-12 text-center">
+                          <br>
+                          {% if graph %}
+                              <h2 class="mb-4 text-center" style="color: var(--text-color);">Prediction Graph</h2>
+                              <div class="graph-container">
+                                  <img src="data:image/png;base64,{{ graph }}" alt="Demand Graph" class="img-fluid rounded shadow-lg">
+                              </div>
+                          {% else %}
+                              <p style="color: var(--text-color);">No graph available for the selected model.</p>
+                          {% endif %}
+                      </div>
+
+                  <div id="rangeSummary" class="mt-3 text-center"></div>
+                  <div id="futureRangeSummary" class="mt-3 text-center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5 justify-content-center">
+      <div class="col-md-8"> <!-- Adjust the width of the table -->
+          {% if prediction %}
+          <h2 class="text-center">Prediction</h2>
+          <div class="table-responsive table-container"> 
+              <table id="table2" class="display nowrap table table-bordered" style="width:100%">
+                  <thead>
+                      <tr>
+                          <th>Time</th>
+                          <th>Predicted Demand (MW)</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for time, demand in prediction %}
+                      <tr>
+                          <td>{{ time }}</td>
+                          <td>{{ demand }}</td>
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+          {% endif %}
+      </div>
+    </div>
+  
+
+        <graphs id="gallery" class="gallery ">
+            <div class="container">
+              <div class="row">                
+                <div class="col-md-12 mt-5">
+                    <h1 class="text-center" style="color: var(--text-color);">Last 24 Hrs history</h1>
+                  <!-- Tabs -->
+                  <nav class="">
+                    <div
+                      class="nav nav-tabs nav-justified"
+                      id="nav-tab"
+                      role="tablist"
+                    >
+                      <button
+                        class="nav-link active  "
+                        id="nav-1-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-1"
+                        type="button"
+                        role="tab"
+                        aria-controls="nav-1"
+                        aria-selected="true"
+                      >
+                        Overall 
+                      </button>
+                      <button
+                        class="nav-link  "
+                        id="nav-2-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-2"
+                        type="button"
+                        role="tab"
+                        aria-controls="nav-2"
+                        aria-selected="true"
+                      >
+                        DELHI
+                      </button>
+                      <button
+                        class="nav-link  "
+                        id="nav-3-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-3"
+                        type="button"
+                        role="tab"
+                        aria-controls="nav-3"
+                        aria-selected="false"
+                      >
+                      BRPL
+                      </button>
+                      <button
+                        class="nav-link  "
+                        id="nav-4-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-4"
+                        type="button"
+                        role="tab"
+                        aria-controls="nav-4"
+                        aria-selected="false"
+                      >
+                      BYPL
+                      </button>
+                      <button
+                        class="nav-link  "
+                        id="nav-5-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-5"
+                        type="button"
+                        role="tab"
+                        aria-controls="nav-5"
+                        aria-selected="false"
+                      >
+                      TDPL
+                      </button>
+                      <button
+                        class="nav-link  "
+                        id="nav-6-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-6"
+                        type="button"
+                        role="tab"
+                        aria-controls="nav-6"
+                        aria-selected="false"
+                      >
+                      NDMC
+                      </button>
+                      <button
+                        class="nav-link  "
+                        id="nav-7-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-7"
+                        type="button"
+                        role="tab"
+                        aria-controls="nav-7"
+                        aria-selected="false"
+                      >
+                      MES
+                      </button>
+                    
+                    </div>
+                  </nav>
+                  <!-- End Tabs -->
+                </div>
+                <div class="col-md-12">
+                  <!-- Tab content -->
+                  <div class="tab-content" id="nav-tabContent">
+                    <div
+                      class="tab-pane fade show active"
+                      id="nav-1"
+                      role="tabpanel"
+                      aria-labelledby="nav-home-1"
+                      tabindex="0"
+                    >
+                      <div class="row">
+                        <div class="col-md-6">
+                            <img src="static/Picture-sub-all.png" class="img-fluid" alt="">
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-light ">
+                                <tr>
+                                    <th>DELHI</th>
+                                    <th>BRPL</th>
+                                    <th>BYPL</th>
+                                    <th>TDPL</th>
+                                    <th>NDMC</th>
+                                    <th>MES</th>
+                                </tr>
+                                <tr>
+                                    <td>1764.76</td>
+                                    <td>747.59</td>
+                                    <td>309.9</td>
+                                    <td>580.69</td>
+                                    <td>87.13</td>
+                                    <td>16.56</td>
+                                </tr>
+                                <tr>
+                                    <td>4164.27</td>
+                                    <td>1819.87</td>
+                                    <td>829.73</td>
+                                    <td>1351.5</td>
+                                    <td>182.58</td>
+                                    <td>38.99</td>
+                                </tr>
+                                <tr>
+                                    <td>3075.30</td>
+                                    <td>1316.98</td>
+                                    <td>594.43</td>
+                                    <td>980.78</td>
+                                    <td>129.69</td>
+                                    <td>24.20</td>
+                                </tr>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="tab-pane fade"
+                      id="nav-2"
+                      role="tabpanel"
+                      aria-labelledby="nav-2-tab"
+                      tabindex="2"
+                    >
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="static/Picture-sub-1.png" class="img-fluid" alt="">
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-light ">
+                                <tr>
+                                    <th>DELHI</th>                                    
+                                </tr>
+                                <tr>
+                                    <td>1764.76</td>                                   
+                                </tr>
+                                <tr>
+                                    <td>4164.27</td>
+                                </tr>
+                                <tr>
+                                    <td>3075.30</td>
+                                </tr>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+      
+                    <div
+                      class="tab-pane fade"
+                      id="nav-3"
+                      role="tabpanel"
+                      aria-labelledby="nav-3-tab"
+                      tabindex="3"
+                    >
+                        <div class="row">
+                            <div class="col-md-6">
+                                <img src="static/Picture-sub-1.png" class="img-fluid" alt="">
+                            </div>
+                            <div class="col-md-6">
+                                <table class="table table-light ">
+                                    <tr>
+                                        <th>BRPL</th>                                    
+                                    </tr>
+                                    <tr>
+                                        <td>1764.76</td>                                   
+                                    </tr>
+                                    <tr>
+                                        <td>4164.27</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3075.30</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+      
+                    <div
+                      class="tab-pane fade"
+                      id="nav-4"
+                      role="tabpanel"
+                      aria-labelledby="nav-4-tab"
+                      tabindex="4"
+                    >
+                      <div class="row">
+                        <div class="col-md-6">
+                            <img src="static/Picture-sub-1.png" class="img-fluid" alt="">
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-light ">
+                                <tr>
+                                    <th>BYPL</th>                                    
+                                </tr>
+                                <tr>
+                                    <td>1764.76</td>                                   
+                                </tr>
+                                <tr>
+                                    <td>4164.27</td>
+                                </tr>
+                                <tr>
+                                    <td>3075.30</td>
+                                </tr>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="tab-pane fade"
+                      id="nav-5"
+                      role="tabpanel"
+                      aria-labelledby="nav-5-tab"
+                      tabindex="5"
+                    >
+                      <div class="row">
+                        <div class="col-md-6">
+                            <img src="static/Picture-sub-1.png" class="img-fluid" alt="">
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-light ">
+                                <tr>
+                                    <th>NDPL</th>                                    
+                                </tr>
+                                <tr>
+                                    <td>1764.76</td>                                   
+                                </tr>
+                                <tr>
+                                    <td>4164.27</td>
+                                </tr>
+                                <tr>
+                                    <td>3075.30</td>
+                                </tr>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="tab-pane fade"
+                      id="nav-6"
+                      role="tabpanel"
+                      aria-labelledby="nav-6-tab"
+                      tabindex="6"
+                    >
+                      <div class="row">
+                        <div class="col-md-6">
+                            <img src="Picture-sub-1.png" class="img-fluid" alt="">
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-light ">
+                                <tr>
+                                    <th>NDMC</th>                                    
+                                </tr>
+                                <tr>
+                                    <td>1764.76</td>                                   
+                                </tr>
+                                <tr>
+                                    <td>4164.27</td>
+                                </tr>
+                                <tr>
+                                    <td>3075.30</td>
+                                </tr>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="tab-pane fade"
+                      id="nav-7"
+                      role="tabpanel"
+                      aria-labelledby="nav-7-tab"
+                      tabindex="7"
+                    >
+                      <div class="row">
+                        <div class="col-md-6">
+                            <img src="Picture-sub-1.png" class="img-fluid" alt="">
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-light ">
+                                <tr>
+                                    <th>NDMC</th>                                    
+                                </tr>
+                                <tr>
+                                    <td>1764.76</td>                                   
+                                </tr>
+                                <tr>
+                                    <td>4164.27</td>
+                                </tr>
+                                <tr>
+                                    <td>3075.30</td>
+                                </tr>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+        </graphs>
+    </div>
+    <div class="container-fluid">
+      <div class="row p-3 text-center copyright">
+        <p class="copyright-text">&copy; T E A M   P R O S O R T X</p>
+      </div>
+    </div>    
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"
+    ></script>
+
+  <!-- gallery js -->
+  <script src="https://cdn.jsdelivr.net/npm/bs5-lightbox@1.8.2/dist/index.bundle.min.js"></script>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+ 
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <!-- DataTable JS -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <!-- Buttons Extension JS -->
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <!-- PDF Export (via pdfmake) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.5/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.5/vfs_fonts.js"></script>
+
+
+  <script>
+    $(document).ready(function() {
+        $('#example').DataTable({
+            dom: 'Bfrtip', // Adds the Buttons to the table
+            buttons: [
+                'csvHtml5', // Export to CSV
+                {
+                    extend: 'pdfHtml5',
+                    orientation: 'landscape', // Optional: Landscape or Portrait orientation
+                    pageSize: 'A4',           // Optional: Page size
+                    title: 'DataTable Example' // Title for the PDF
+                },
+                {
+                        extend: 'print',
+                        text: 'Print',
+                        // className: 'btn btn-info'
+                    }
+            ],
+            responsive: true // Makes the table responsive
+        });
+    });
+</script>
+<script>
+  // Get today's date in YYYY-MM-DD format
+  function getTodayDate() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+  }
+
+  // Set min attribute to today's date when page loads
+  window.onload = function() {
+      const fromDateInput = document.getElementById('fromDate');
+      const toDateInput = document.getElementById('toDate');
+      
+      // Set minimum date for both inputs to today
+      fromDateInput.min = getTodayDate();
+      toDateInput.min = getTodayDate();
+  }
+
+  // Validate date range selection
+  function validateDateRange() {
+      const fromDateInput = document.getElementById('fromDate');
+      const toDateInput = document.getElementById('toDate');
+      const fromDateError = document.getElementById('fromDateError');
+      const toDateError = document.getElementById('toDateError');
+      const rangeSummary = document.getElementById('rangeSummary');
+
+      // Reset previous error messages and summary
+      fromDateError.textContent = '';
+      toDateError.textContent = '';
+      rangeSummary.textContent = '';
+
+      // Get date values
+      const fromDate = fromDateInput.value ? new Date(fromDateInput.value) : null;
+      const toDate = toDateInput.value ? new Date(toDateInput.value) : null;
+      const today = new Date();
+
+      // Validate From Date
+      if (fromDate && fromDate < today) {
+          fromDateError.textContent = 'From date cannot be in the past';
+          fromDateInput.value = ''; // Clear the input
+          return;
+      }
+
+      // Validate To Date
+      if (toDate && toDate < today) {
+          toDateError.textContent = 'To date cannot be in the past';
+          toDateInput.value = ''; // Clear the input
+          return;
+      }
+
+      // Validate date range
+      if (fromDate && toDate) {
+          if (toDate < fromDate) {
+              toDateError.textContent = 'To date must be after From date';
+              return;
+          }
+
+          // Calculate and display date range
+          const timeDiff = toDate.getTime() - fromDate.getTime();
+          const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+          rangeSummary.textContent = `Selected Range: ${daysDiff} day(s)`;
+      }
+  }
+</script>
+<script>
+  // Get today's date in YYYY-MM-DD format
+  function getTodayDate() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+  }
+
+  // Set max attribute to today's date for past fields and min attribute for future fields
+  window.onload = function() {
+      const startDateInput = document.getElementById('startDate');
+      const endDateInput = document.getElementById('endDate');
+      const futureStartDateInput = document.getElementById('futureStartDate');
+      const futureEndDateInput = document.getElementById('futureEndDate');
+      
+      // Set maximum date for past inputs
+      startDateInput.max = getTodayDate();
+      endDateInput.max = getTodayDate();
+
+      // Set minimum date for future inputs
+      futureStartDateInput.min = getTodayDate();
+      futureEndDateInput.min = getTodayDate();
+  }
+
+  // Validate date range selection for past dates
+  function validateDateRange() {
+      const startDateInput = document.getElementById('startDate');
+      const endDateInput = document.getElementById('endDate');
+      const startDateError = document.getElementById('startDateError');
+      const endDateError = document.getElementById('endDateError');
+      const rangeSummary = document.getElementById('rangeSummary');
+
+      // Reset previous error messages and summary
+      startDateError.textContent = '';
+      endDateError.textContent = '';
+      rangeSummary.textContent = '';
+
+      // Get date values
+      const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+      const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+      const today = new Date();
+
+      // Validate From Date
+      if (startDate && startDate > today) {
+          startDateError.textContent = 'From date cannot be in the future';
+          startDateInput.value = ''; // Clear the input
+          return;
+      }
+
+      // Validate To Date
+      if (endDate && endDate > today) {
+          endDateError.textContent = 'To date cannot be in the future';
+          endDateInput.value = ''; // Clear the input
+          return;
+      }
+
+      // Validate date range
+      if (startDate && endDate) {
+          if (endDate < startDate) {
+              endDateError.textContent = 'To date must be after From date';
+              return;
+          }
+
+          // Calculate and display date range
+          const timeDiff = endDate.getTime() - startDate.getTime();
+          const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+          rangeSummary.textContent = `Selected Range: ${daysDiff} day(s)`;
+      }
+  }
+
+  // Validate date range selection for future dates
+  function validateFutureDateRange() {
+      const futureStartDateInput = document.getElementById('futureStartDate');
+      const futureEndDateInput = document.getElementById('futureEndDate');
+      const futureStartDateError = document.getElementById('futureStartDateError');
+      const futureEndDateError = document.getElementById('futureEndDateError');
+      const futureRangeSummary = document.getElementById('futureRangeSummary');
+
+      // Reset previous error messages and summary
+      futureStartDateError.textContent = '';
+      futureEndDateError.textContent = '';
+      futureRangeSummary.textContent = '';
+
+      // Get date values
+      const futureStartDate = futureStartDateInput.value ? new Date(futureStartDateInput.value) : null;
+      const futureEndDate = futureEndDateInput.value ? new Date(futureEndDateInput.value) : null;
+
+      // Validate From Date
+      if (futureStartDate && futureStartDate < new Date()) {
+          futureStartDateError.textContent = 'From date cannot be in the past';
+          futureStartDateInput.value = ''; // Clear the input
+          return;
+      }
+
+      // Validate To Date
+      if (futureEndDate && futureEndDate < new Date()) {
+          futureEndDateError.textContent = 'To date cannot be in the past';
+          futureEndDateInput.value = ''; // Clear the input
+          return;
+      }
+
+      // Validate date range
+      if (futureStartDate && futureEndDate) {
+          if (futureEndDate < futureStartDate) {
+              futureEndDateError.textContent = 'To date must be after From date';
+              return;
+          }
+
+          // Calculate and display date range
+          const timeDiff = futureEndDate.getTime() - futureStartDate.getTime();
+          const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+          futureRangeSummary.textContent = `Selected Range: ${daysDiff} day(s)`;
+      }
+  }
+
+  $(document).ready(function() {
+            $('#table1').DataTable({
+                dom: 'Bfrtip',
+                buttons: ['csv', 'pdf', 'print']
+            });
+
+            $('#table2').DataTable({
+                dom: 'Bfrtip',
+                buttons: ['csv', 'pdf', 'print']
+            });
+        });
+</script>
+<script>
+  function toggleTheme() {
+    document.body.classList.toggle("dark-theme");
+    const themeIcon = document.getElementById("theme-icon");
+    if (document.body.classList.contains("dark-theme")) {
+      themeIcon.classList.remove("fa-moon");
+      themeIcon.classList.add("fa-sun"); // Sun icon for light theme
+    } else {
+      themeIcon.classList.remove("fa-sun");
+      themeIcon.classList.add("fa-moon"); // Moon icon for dark theme
+    }
+  }
+</script>
+<script>
+  function toggleTheme() {
+    document.body.classList.toggle("dark-theme");
+  }
+</script>
+
+</body>
+</html>
