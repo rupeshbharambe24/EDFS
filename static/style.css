@@ -1,0 +1,800 @@
+:root {
+  --primary-color: #ffbf36;
+  --background-color: #ffffff;
+  --text-color: #333333;
+  --card-bg: #ffffff;
+  --table-bg: #ffffff;
+  --table-text-color: #333333;
+}
+
+.dark-theme {
+  --primary-color: #ffbf36;
+  --background-color: #282828;
+  --text-color: #ffffff;
+  --card-bg: #333333;
+  --table-bg: #444444;
+  --table-text-color: #ffffff;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar {
+  background-color: var(--background-color);
+}
+
+.theme-toggle {
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  font-size: 1.5rem;
+}
+
+.mycard,
+.service-card {
+  background-color: var(--card-bg);
+}
+
+.tab-content {
+  background-color: var(--card-bg);
+  color: var(--text-color) !important;
+}
+
+.table-container table {
+  width: 100%;
+  border: 1px solid var(--table-text-color);
+  border-radius: 5px;
+}
+
+.table-container th, .table-container td {
+  color: var(--table-text-color);
+  padding: 10px;
+  text-align: center;
+}
+
+.table-container th {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 40px !important;
+  }
+  .main-content {
+    position: static;
+    transform: none;
+  }
+}
+
+body:not(.dark-theme) .navbar {
+  background-color: white; /* White background for light theme */
+}
+
+body:not(.dark-theme) .navbar-light .navbar-nav .nav-link {
+  color: black; /* Black text color for light mode */
+}
+
+body:not(.dark-theme) .navbar-light .navbar-toggler-icon {
+  background-color: black; /* Black icon for light mode */
+}
+
+/* Dark theme */
+body.dark-theme .navbar {
+  background-color: #333; /* Dark background for dark theme */
+}
+
+body.dark-theme .navbar-light .navbar-nav .nav-link {
+  color: yellow !important; /* Yellow text color for dark mode */
+}
+
+body.dark-theme .navbar-light .navbar-toggler-icon {
+  background-color: yellow; /* Yellow icon for dark mode */
+}
+
+/* Gallery Section: Ensure headings are visible in dark mode */
+.mainheading, .subheading {
+  color: var(--text-color);
+}
+
+/* Nav Section: Ensure nav links are visible in dark mode */
+.nav-link {
+  color: var(--text-color) !important; /* Ensures text color is updated for nav links */
+}
+
+
+
+/* When dark theme is active, nav links should use the correct text color */
+.dark-theme .nav-link {
+  color: var(--text-color) !important;
+}
+
+.dark-theme .nav-link.active {
+  color: var(--background-color) !important; /* Light text on dark background for active tab */
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  /* background-color: #171717; */
+  /* color: #b5b5b5; */
+  font-weight: 100;
+}
+/* Start Navbar */
+.navbar {
+  background-color: #282828;
+  padding: 10px 0px;
+}
+.nav-item {
+  padding: 0px 10px;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+.nav-item:hover .nav-link {
+  color: #ffbf36;
+}
+.navbar-brand {
+  font-size: 30px;
+}
+.navbar-brand i {
+  color: #ffbf36;
+  font-weight: 700 !important;
+  font-size: 30px;
+}
+/* End Navbar */
+/* Poffile */
+.main img{
+  width: 60%;
+}
+.projectTitle
+{
+  font-size: 24px;
+}
+
+.profile-section{
+  position: relative;
+}
+.floating {  
+    animation-name: floating;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    margin-left: 30px;
+    margin-top: 5px;
+}
+
+/* Custom CSS for modern inputs */
+.form-select-lg, .form-control-lg {
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  transition: border-color 0.3s ease;
+}
+
+.form-select-lg:focus, .form-control-lg:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+}
+ 
+@keyframes floating {
+    0% { transform: translate(0,  0px); }
+    50%  { transform: translate(0, 15px); }
+    100%   { transform: translate(0, -0px); }    
+}
+/* End Profile */
+/* Slider */
+.slider {
+  background: linear-gradient(to left, rgba(0, 0, 0, 5), rgba(0, 0, 0, 0)),
+    url("images/yrt-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 100px;
+  height: calc(100vh);
+}
+.slider span {
+  color: #fff;
+}
+/* End Slider */
+.hero-title {
+  font-size: 60px !important;
+  font-weight: 900 !important;
+  line-height: 1;
+}
+.primary-color {
+  color: #ffbf36 !important;
+}
+.secondary-color {
+  color: #ffffff !important;
+}
+.slider-content-parent {
+  position: relative;
+}
+.slider-content {
+  padding: 20px;
+  position: absolute;
+  width: 70%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.main-content {
+  /* background-color: red; */
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  
+}
+
+/* Start Carousel */
+.bg1 {
+  background: linear-gradient(rgba(17, 0, 79, 0.5), rgba(17, 0, 79, 0.5)),
+    url("images/slider/image-1.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: calc(100vh);
+  position: relative;
+}
+.bg2 {
+  background: linear-gradient(rgba(17, 0, 79, 0.5), rgba(17, 0, 79, 0.5)),
+    url("images/slider/image-2.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: calc(100vh);
+  position: relative;
+}
+.bg3 {
+  background: linear-gradient(rgba(17, 0, 79, 0.5), rgba(17, 0, 79, 0.5)),
+    url("images/slider/image-3.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: calc(100vh);
+  position: relative;
+}
+.bg4 {
+  background: linear-gradient(rgba(17, 0, 79, 0.5), rgba(17, 0, 79, 0.5)),
+    url("images/slider/image-4.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: calc(100vh);
+  position: relative;
+}
+
+.mycaption {
+  color: #fff;
+  position: absolute;
+  width: 40%;
+  text-align: center;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 50px;
+}
+@media only screen and (max-width: 720px) {
+  .mycaption {
+    width: 80%;
+  }
+}
+
+.mycaption h1 {
+  text-align: center;
+  font-size: 50px;
+}
+.mycaption p {
+  font-weight: 300;
+  text-align: center;
+}
+
+.readmore_slider {
+  text-decoration: none;
+  color: #fff;
+  border: 1px solid #fff;
+  padding: 10px 20px;
+  display: inline-block;
+  margin-top: 20px;
+}
+.readmore_slider:hover {
+  background-color: #fff;
+  color: rgb(17, 0, 79);
+}
+/* End carousel */
+
+/* About */
+section {
+  padding: 50px 0px;
+  /* background-color: #111; */
+}
+
+.mainheading {
+  font-size: 40px;
+  font-weight: 900;
+  text-align: center;
+  display: block;
+}
+
+.mainheading::before {
+  content: "";
+  width: 50px;
+  background-color: #ffbf36;
+  height: 2px;
+  margin: 14px;
+  display: inline-block;
+}
+.mainheading::after {
+  content: "";
+  width: 50px;
+  background-color: #ffbf36;
+  height: 2px;
+  margin: 14px;
+  display: inline-block;
+}
+.subheading {
+  text-align: center;
+  display: block;
+}
+
+.about p,
+li {
+  line-height: 30px;
+  /* color: #636262; */
+}
+
+.about ul {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+  font-size: 20px;
+}
+
+.about i {
+  padding-right: 10px;
+  color: #ffbf36;
+  font-size: 20px;
+}
+.about table,
+td,
+th,
+tr {
+  border: none;
+  font-size: 18px;
+}
+
+.aboutlearnmore {
+  color: #ffbf36;
+  text-decoration: none;
+  padding: 10px 20px;
+  border: 1px solid #ffbf36;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.aboutlearnmore:hover {
+  color: #fff;
+  background-color: #ffbf36;
+  transition: 0.5s;
+}
+
+.mycard {
+  padding: 20px;
+  /* background: rgba(255, 255, 255, 0.1); */
+  box-shadow: 0px 0px 30px #cecece;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 40px;
+}
+.mycard i {
+  font-size: 40px;
+}
+.counter {
+  font-size: 40px;
+  font-weight: 900;
+}
+.mycard a {
+  text-decoration: none;
+  color: #ffbf36;
+}
+.mycard a:hover {
+  letter-spacing: 1px;
+  transition: 0.5s;
+}
+.cardtitle {
+  font-size: 20px;
+  font-weight: 300;
+  color: #767676;
+}
+/* End About */
+
+/* help */
+.help {
+  background-color: #282828;
+  color: #fff;
+  text-align: center;
+}
+.help p {
+  letter-spacing: 1px;
+  font-weight: 100;
+}
+.help-phone {
+  font-size: 30px;
+}
+.help-phone i {
+  color: #ffbf36;
+}
+/* End help */
+.table-container {
+  max-width: 1000px; /* Limits table width */
+  margin: 0 auto; /* Centers the table */
+  padding: 20px;
+}
+
+
+/* Services */
+/* Custom CSS for tables */
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(13, 110, 253, 0.05);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(13, 110, 253, 0.1);
+}
+
+.table-dark {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.table-responsive {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+/* Add animations */
+[data-aos] {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Add hover effects */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.service-card {
+  padding: 20px;
+  box-shadow: 0px 0px 30px #cecece;
+  transition: 0.5s;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+.service-card:hover {
+  background-color: #ffbf36;
+  color: #111;
+}
+.service-card:hover i {
+  color: #111;
+}
+.service-card i {
+  color: #ffbf36;
+  font-size: 50px;
+}
+
+.service-card a {
+  text-decoration: none;
+  color: #ffbf36;
+}
+.service-card a:hover {
+  color: #ffbf36;
+  letter-spacing: 1px;
+  transition: 0.5s;
+}
+/* End Services */
+
+/* team */
+.team {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.teamcard {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+.teamcard:hover {
+  box-shadow: 0px 0px 30px #cecece;
+}
+.teamcard img {
+  border-radius: 5px;
+}
+.teamcard h3 {
+  margin-top: 10px;
+}
+.teamcard p {
+  color: #767676;
+}
+
+.teamcard i {
+  padding: 10px;
+  font-size: 20px;
+}
+.teamcard i:hover {
+  color: #ffbf36;
+  cursor: pointer;
+}
+.teamcard a {
+  color: #333333;
+}
+/* End team */
+
+/* Accordion FAQs */
+.accordion-button:focus,
+.active {
+  outline: 0 !important;
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0) !important;
+  border: none;
+  /* background-color: #140259; */
+  /* color: #f8f9fa; */
+}
+.accordion-button {
+  font-size: 20px;
+  font-weight: 700;
+  border: 1px solid #e1e1e1;
+}
+.accordion-item {
+  margin-top: 20px;
+}
+
+.faq p {
+  line-height: 30px;
+  text-align: justify;
+}
+/* End Accordion FAQs */
+
+
+.gallery {
+  color: #111 !important;
+  /* background-color: rgba(255, 255, 255, 0.1); */
+}
+.gallery, .navlink{
+  color: #111 !important;
+}
+.tab-content {
+  /* background-color: #111; */
+  padding: 10px;
+  color: #111 !important;
+}
+
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+  background-color: #282828;
+  color: #fff !important;
+  border: none;
+}
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover
+{
+  border: none;
+  background-color: #111;
+  color: #fff !important;
+}
+.nav-tabs .nav-link {
+  color: #333333;
+  padding: 20px;
+}
+.nav-tabs .nav-link:hover {
+  border: none;
+}
+.nav-tabs img {
+  margin-top: 15px;
+}
+/* End gallery */
+/* Contact */
+.contact i {
+  font-size: 30px;
+  color: #ffbf36;
+}
+.formbtn {
+  /* background-color: #282828; */
+  color: #111;
+  border: 1px solid #282828;
+  padding: 10px 40px;
+  margin-top: 20px;
+}
+.formbtn:hover {
+  border: 1px solid #282828;
+  background-color: #fff;
+  color: #282828;
+  transition: 0.5s;
+}
+/* End Contact */
+/* Graph container styles */
+.graph-container {
+  display: inline-block;
+  max-width: 90%;
+  margin: 0 auto;
+  background-color: #f8f9fa; /* Light background for the container */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+/* Image styling */
+.graph-container img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px; /* Rounded corners for the image */
+}
+
+/* Title styling */
+h2.mb-4 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Footer */
+.footer {
+  background-color: #282828;
+  color: #fff;
+}
+
+.contactdetails {
+  background-color: #282828;
+  padding: 20px;
+}
+.contactdetails i {
+  color: #ffbf36;
+}
+
+.quicklinks ul {
+  list-style-type: none;
+  padding: 0px;
+}
+.quicklinks li {
+  line-height: 40px;
+}
+.quicklinks i {
+  color: #ffbf36;
+  font-size: 17px;
+  padding: 20px;
+}
+.footerservices ul {
+  list-style-type: none;
+  padding: 0px;
+}
+.footerservices li {
+  line-height: 40px;
+}
+.footerservices i {
+  color: #ffbf36;
+  font-size: 17px;
+  padding: 20px;
+}
+.footersocial ul {
+  list-style-type: none;
+  padding: 0px;
+}
+.footersocial li {
+  line-height: 40px;
+}
+.footersocial i {
+  color: #ffbf36;
+  font-size: 20px;
+  padding: 20px;
+}
+/* End Footer */
+/* General styling for the welcome section */
+#welcome-section {
+  background: linear-gradient(135deg, #f39c12, #e74c3c); /* Yellow-orange gradient for light mode */
+  padding: 100px 0 60px 0; /* Increased top padding to push text down */
+  border-bottom: 5px solid #f39c12; /* Border to match color theme */
+  transition: background-color 0.3s ease, padding 0.3s ease;
+  margin-top: 50px;
+}
+
+#welcome-section h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #212529; /* Default dark text color for light mode */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Text shadow for depth */
+  transition: color 0.3s ease;
+}
+
+#welcome-section p {
+  font-size: 1.8rem;
+  color: #ffffff; /* White text for contrast in light mode */
+  transition: color 0.3s ease;
+}
+
+/* Dark mode styling */
+body.dark-mode #welcome-section {
+  background: linear-gradient(135deg, #f39c12, #2c3e50); /* Yellow and grey gradient for dark mode */
+  border-bottom: 5px solid #f39c12;
+}
+
+body.dark-mode #welcome-section h1 {
+  color: #ffffff; /* White text in dark mode */
+}
+
+body.dark-mode #welcome-section p {
+  color: #f8f9fa; /* Light text for contrast in dark mode */
+}
+
+/* For large screens */
+@media (min-width: 768px) {
+  #welcome-section h1 {
+    font-size: 4.5rem; /* Larger size for larger screens */
+  }
+
+  #welcome-section p {
+    font-size: 2rem;
+  }
+}
+
+/* For smaller screens (mobile) */
+@media (max-width: 767px) {
+  #welcome-section h1 {
+    font-size: 2.8rem;
+  }
+
+  #welcome-section p {
+    font-size: 1.4rem;
+  }
+}
+
+/* Ensure the background remains black and text is white in both themes */
+.copyright {
+  background-color: black; /* Black background */
+  text-align: center;       /* Center the text */
+  padding: 20px 0;
+  margin-top: 30px;          /* Add some padding */
+}
+
+.copyright-text {
+  color: white;             /* White text */
+  letter-spacing: 0.3em;    /* Spacing between letters */
+  font-size: 18px;          /* Font size */
+}
+
+.dt-buttons button{
+  
+border: none;
+padding: 10px 30px;
+border-radius: 5px;
+    
+}
+
+.adminbg{
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('bg-1.jpg');
+  background-size: cover;
+  background-position: center;
+  
+}
+
+.loginbg{
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 50px;
+}
