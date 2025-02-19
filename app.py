@@ -27,9 +27,9 @@ firebase_admin.initialize_app(cred, {
 })
 
 # Define model paths
-DAILY_MODEL_PATH = r"R:\Projects\Electricity Demand Prediction\Code\Daily Model - I\model\daily-model.pkl"
-HOURLY_MODEL_PATH = r"R:\Projects\Electricity Demand Prediction\Code\Hourly Model - I\model\hourly_model.pkl"
-MIN5_MODEL_PATH = r"R:\Projects\Electricity Demand Prediction\Code\5-Min Model - I\models\5Min-model.pkl"
+DAILY_MODEL_PATH = r"models\daily-model.pkl"
+HOURLY_MODEL_PATH = r"models\hourly-model.pkl"
+MIN5_MODEL_PATH = r"models\5Min-model.pkl"
 
 # Define the API Key and base URL for the Visual Crossing Weather API
 load_dotenv()  # Load environment variables from .env file
@@ -368,4 +368,4 @@ def contact():
     return render_template('index.html#contact')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8002)
+    app.run(debug=True, port=8080)
