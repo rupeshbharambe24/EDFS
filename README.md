@@ -67,7 +67,7 @@ Open `index.html` in a browser or use a local server:
 ```bash
 python -m http.server 8000
 ```
-Then visit `http://localhost:8000`.
+Then visit `http://localhost:8080`.
 
 ### 🔹 Deploy Using Docker & Google Cloud Run
 1. Build the Docker image:
