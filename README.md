@@ -105,11 +105,8 @@ gcloud run deploy electricity-demand-forecast --image gcr.io/YOUR_PROJECT_ID/ele
 ## 🤝 Contributions
 Feel free to fork, contribute, and submit PRs. Suggestions and improvements are always welcome!
 
-## 📜 License
-This project is licensed under the **MIT License**.
-
 ## 📬 Contact
-For any queries, reach out via [LinkedIn](https://www.linkedin.com/in/yourprofile) or open an issue on GitHub.
+For any queries, reach out via [LinkedIn](https://www.linkedin.com/in/rupesh-bharambe-056a12257/) or open an issue on GitHub.
 
 ---
 🔗 **Try the live project here:** [Site](https://edfs-app-923630851302.us-central1.run.app/)  
