@@ -21,9 +21,12 @@ from email.mime.multipart import MIMEMultipart
 app = Flask(__name__)
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate('electricity-demand-forecasting-firebase-adminsdk-fbsvc-ded7bd53a2.json')
+# Set FIREBASE_CREDENTIALS_PATH and FIREBASE_DATABASE_URL in your .env file
+firebase_cred_path = os.getenv('FIREBASE_CREDENTIALS_PATH')
+firebase_db_url = os.getenv('FIREBASE_DATABASE_URL')
+cred = credentials.Certificate(firebase_cred_path)
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://electricity-demand-forecasting-default-rtdb.asia-southeast1.firebasedatabase.app/'
+    'databaseURL': firebase_db_url
 })
 
 # Define model paths
@@ -37,7 +40,7 @@ api_key = os.getenv('API_KEY')
 base_url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline"
 
 # Secret key for session management
-app.secret_key = 'L4le~7u5'
+app.secret_key = os.getenv('FLASK_SECRET_KEY')
 app.permanent_session_lifetime = timedelta(minutes=10)
 
 # Helper function to load models
@@ -319,8 +322,8 @@ def send_email():
     user_email = data.get('email')  # This is the email entered by the user
     user_message = data.get('message')
 
-    receiver_email = "rbtech44@gmail.com"  # Your email where messages should be received
-    password = "cngu talf qoyx niju"  # Use an App Password for security
+    receiver_email = os.getenv('CONTACT_RECEIVER_EMAIL')
+    password = os.getenv('CONTACT_EMAIL_APP_PASSWORD')  # Gmail App Password from .env
 
     subject = "New Contact Form Submission"
     

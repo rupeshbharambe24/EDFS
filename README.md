@@ -1,114 +1,84 @@
-# 🔌 Real-Time Electricity Demand Forecasting
+# EDFS — Electricity Demand Forecasting System
 
-## 🚀 Overview
-This project is a real-time electricity demand forecasting system that predicts **daily, hourly, and 5-minute electricity demand** with an accuracy of over **98%**. The system utilizes **historical electricity consumption data**, real-time **weather data**, and **holiday information** to provide accurate forecasts.
+A Flask web application that predicts electricity demand at **daily, hourly, and 5-minute** resolutions using historical consumption data, real-time weather signals, and holiday information.
 
-The project integrates **Python, Flask, Firebase, Google Cloud Platform (GCP), and Visual Crossing API** to build a scalable, responsive, and secure web-based forecasting system.
+> **Note:** This was my SIH 2024 prototype. The newer, significantly more accurate version is [**Gridalytics**](https://github.com/rupeshbharambe24/Gridalytics) — built with 7 ML models, walk-forward CV, and 0.18% MAPE on the same problem. This repo is preserved as the original implementation.
 
-## ✨ Features
-- **High Accuracy Forecasting:** Uses **SARIMA**, ARIMA, Transformers, and Regression models, with SARIMA delivering the best results.
-- **Three Prediction Models:** Supports **daily, hourly, and 5-minute** demand forecasting.
-- **Real-Time Data Enrichment:** Fetches weather data (temperature, humidity, wind speed, rainfall) from **Visual Crossing API**.
-- **Automated Training:** Models auto-update daily with new data for continuous improvement.
-- **User Authentication:** Uses **Firebase Authentication** for secure access (admin approval required).
-- **Cloud Deployment:** Fully deployed using **Docker and Google Cloud Run** for scalability.
-- **Responsive Frontend:** Built with **HTML, CSS, and JavaScript** for an intuitive user experience.
+## Approach
 
-## 🛠️ Tech Stack
-- **Backend:** Python, Flask
-- **Frontend:** HTML, CSS, JavaScript
-- **Machine Learning Models:** SARIMA, ARIMA, Transformers, Regression
-- **Authentication & Database:** Firebase (Realtime Database & Authentication)
-- **Cloud & Deployment:** Google Cloud Platform (Cloud Run, Docker)
-- **Weather Data API:** Visual Crossing API
+- **Models:** SARIMAX, ARIMA, Transformers, and Regression — SARIMAX selected as the production model for its handling of weather/holiday exogenous regressors.
+- **Data sources:** Historical demand + Visual Crossing Weather API (temperature, humidity, wind, rainfall) + Indian holidays.
+- **Three trained models** for daily, hourly, and 5-minute horizons (each saved as a `.pkl` and selected per request).
+- **Auto-training** scheduler refreshes models with new data.
 
-## 📦 Installation & Setup
-### 🔹 Prerequisites
-Ensure you have the following installed:
-- Python 3.x
-- Flask
-- Docker
-- Firebase account
-- Google Cloud SDK
+## Tech Stack
 
-### 🔹 Clone the Repository
-```bash
-git clone https://github.com/yourusername/electricity-demand-forecasting.git
-cd electricity-demand-forecasting
+- Backend: Flask
+- ML: scikit-learn, statsmodels (SARIMAX), joblib
+- Data: pandas, numpy
+- Auth + DB: Firebase Authentication + Realtime Database
+- Weather API: Visual Crossing
+- Frontend: HTML, CSS, JavaScript (Jinja2 templates)
+- Deployment: Docker + Google Cloud Run
+
+## Project Structure
+
+```
+EDFS/
+├── app.py                # Flask app: auth, prediction, weather fetch, contact form
+├── train/                # Training notebooks (daily, hourly, 5-min)
+├── models/               # Trained .pkl model files (gitignored)
+├── templates/            # index, login, signup, model pages
+├── static/               # CSS, JS, assets
+├── Dockerfile            # Container build
+├── requirements.txt
+└── .env.example
 ```
 
-### 🔹 Set Up Virtual Environment & Install Dependencies
+## Setup
+
 ```bash
+git clone https://github.com/rupeshbharambe24/EDFS.git
+cd EDFS
+
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate          # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-```
 
-### 🔹 Set Up Firebase
-1. Create a **Firebase Project** in the [Firebase Console](https://console.firebase.google.com/).
-2. Enable **Authentication** (Email/Password) & **Realtime Database**.
-3. Download `serviceAccountKey.json` from Firebase and place it in the project root.
-4. Add Firebase configuration in `config.js` (for frontend authentication).
+cp .env.example .env
+# Fill in API_KEY, FIREBASE_*, FLASK_SECRET_KEY, CONTACT_* values
 
-### 🔹 Set Up Environment Variables
-Create a `.env` file in the project root and add:
-```env
-FIREBASE_CONFIG="your_firebase_config"
-WEATHER_API_KEY="your_visual_crossing_api_key"
-```
-
-### 🔹 Run Flask Backend
-```bash
 python app.py
 ```
 
-### 🔹 Run Frontend
-Open `index.html` in a browser or use a local server:
-```bash
-python -m http.server 8000
-```
-Then visit `http://localhost:8080`.
+Visit `http://localhost:5000`.
 
-### 🔹 Deploy Using Docker & Google Cloud Run
-1. Build the Docker image:
+### Firebase setup
+
+1. Create a Firebase project, enable Email/Password authentication and Realtime Database.
+2. Download the Admin SDK JSON and set `FIREBASE_CREDENTIALS_PATH` in `.env` to its local path.
+3. Set `FIREBASE_DATABASE_URL` to your project's Realtime Database URL.
+
+### Docker / Cloud Run
+
 ```bash
-docker build -t electricity-demand-forecast .
-```
-2. Push to Google Cloud:
-```bash
-gcloud auth configure-docker
-docker tag electricity-demand-forecast gcr.io/YOUR_PROJECT_ID/electricity-demand-forecast
-docker push gcr.io/YOUR_PROJECT_ID/electricity-demand-forecast
-```
-3. Deploy with Cloud Run:
-```bash
-gcloud run deploy electricity-demand-forecast --image gcr.io/YOUR_PROJECT_ID/electricity-demand-forecast --platform managed --allow-unauthenticated
+docker build -t edfs .
+docker run -p 5000:5000 --env-file .env edfs
+
+# Or deploy to Cloud Run
+gcloud run deploy edfs --source .
 ```
 
-## 🔍 Usage
-1. **Login/Register** (requires admin approval via Firebase).
-2. Select **Daily, Hourly, or 5-Minute Prediction**.
-3. View real-time demand forecasts based on historical trends, weather, and holidays.
+## What it does
 
-## 📈 Model Performance
-| Model        | Accuracy |
-|-------------|---------|
-| Daily       | 98.5%   |
-| Hourly      | 98.2%   |
-| 5-Minute    | 98.1%   |
+- Login / signup via Firebase
+- Pick a horizon (daily / hourly / 5-min)
+- Fetches weather and constructs the feature window
+- Loads the corresponding pre-trained SARIMAX model
+- Returns the forecast as a chart on the model page
 
-## 🏗️ Future Enhancements
-- **More advanced deep learning models** for further accuracy improvements.
-- **Integration with IoT devices** for real-time energy consumption tracking.
-- **Mobile App** for easy access to predictions on the go.
+## Limitations
 
-## 🤝 Contributions
-Feel free to fork, contribute, and submit PRs. Suggestions and improvements are always welcome!
-
-## 📬 Contact
-For any queries, reach out via [LinkedIn](https://www.linkedin.com/in/rupesh-bharambe-056a12257/) or open an issue on GitHub.
-
----
-🔗 **Try the live project here:** [Site](https://edfs-app-923630851302.us-central1.run.app/)  
-🔑 **Trial Credentials:** [Your Trial ID: trial@gmail.com & Password: trial123]
-
+- Single SARIMAX model per horizon, no per-region forecasting
+- No automated retraining trigger from the UI
+- No drift detection or prediction tracking — see Gridalytics for the production-grade version
