@@ -18,6 +18,8 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+load_dotenv()  # Load environment variables from .env before reading any config
+
 app = Flask(__name__)
 
 # Initialize Firebase Admin SDK
@@ -30,12 +32,11 @@ firebase_admin.initialize_app(cred, {
 })
 
 # Define model paths
-DAILY_MODEL_PATH = r"models\daily-model.pkl"
-HOURLY_MODEL_PATH = r"models\hourly-model.pkl"
-MIN5_MODEL_PATH = r"models\5Min-model.pkl"
+DAILY_MODEL_PATH = os.path.join("models", "daily-model.pkl")
+HOURLY_MODEL_PATH = os.path.join("models", "hourly-model.pkl")
+MIN5_MODEL_PATH = os.path.join("models", "5Min-model.pkl")
 
 # Define the API Key and base URL for the Visual Crossing Weather API
-load_dotenv()  # Load environment variables from .env file
 api_key = os.getenv('API_KEY')
 base_url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline"
 

@@ -1,15 +1,27 @@
 # EDFS — Electricity Demand Forecasting System
 
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-web%20app-000000?logo=flask&logoColor=white)
+![statsmodels](https://img.shields.io/badge/model-SARIMAX-4B8BBE)
+![SIH 2024](https://img.shields.io/badge/SIH-2024%20%C2%B7%20PS%201624-orange)
+![Status](https://img.shields.io/badge/status-superseded%20by%20Gridalytics-lightgrey)
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+
 A Flask web application that predicts electricity demand at **daily, hourly, and 5-minute** resolutions using historical consumption data, real-time weather signals, and holiday information.
 
-> **Note:** This was my SIH 2024 prototype. The newer, significantly more accurate version is [**Gridalytics**](https://github.com/rupeshbharambe24/Gridalytics) — built with 7 ML models, walk-forward CV, and 0.18% MAPE on the same problem. This repo is preserved as the original implementation.
+> [!IMPORTANT]
+> **Superseded by [Gridalytics](https://github.com/rupeshbharambe24/Gridalytics).** EDFS was our Smart India Hackathon 2024
+> prototype for problem statement **1624** (electricity demand projection for the Delhi power grid). Gridalytics is the
+> maintained successor: gradient-boosted champion/challenger models evaluated with leak-free walk-forward
+> cross-validation against a persistence baseline, extended beyond Delhi to other Indian states. This repo is kept,
+> unchanged in substance, as the original implementation.
 
 ## Approach
 
-- **Models:** SARIMAX, ARIMA, Transformers, and Regression — SARIMAX selected as the production model for its handling of weather/holiday exogenous regressors.
+- **Models:** `pmdarima.auto_arima` is used to explore orders, then a **SARIMAX** model with weather/holiday exogenous regressors is fitted per horizon (see `train/`). SARIMAX was chosen for its handling of exogenous regressors.
 - **Data sources:** Historical demand + Visual Crossing Weather API (temperature, humidity, wind, rainfall) + Indian holidays.
 - **Three trained models** for daily, hourly, and 5-minute horizons (each saved as a `.pkl` and selected per request).
-- **Auto-training** scheduler refreshes models with new data.
+- Retraining is manual: re-run the notebook for a horizon and replace its `.pkl` in `models/`.
 
 ## Tech Stack
 
@@ -26,13 +38,14 @@ A Flask web application that predicts electricity demand at **daily, hourly, and
 ```
 EDFS/
 ├── app.py                # Flask app: auth, prediction, weather fetch, contact form
-├── train/                # Training notebooks (daily, hourly, 5-min)
-├── models/               # Trained .pkl model files (gitignored)
+├── train/                # Training notebooks (daily, hourly, 5-min SARIMAX)
+├── models/               # Trained .pkl files go here (gitignored, produced by the notebooks)
 ├── templates/            # index, login, signup, model pages
 ├── static/               # CSS, JS, assets
 ├── Dockerfile            # Container build
 ├── requirements.txt
-└── .env.example
+├── .env.example
+└── LICENSE
 ```
 
 ## Setup
@@ -48,6 +61,8 @@ pip install -r requirements.txt
 cp .env.example .env
 # Fill in API_KEY, FIREBASE_*, FLASK_SECRET_KEY, CONTACT_* values
 
+# Train the models first (or copy existing ones) so these files exist:
+#   models/daily-model.pkl, models/hourly-model.pkl, models/5Min-model.pkl
 python app.py
 ```
 
@@ -82,3 +97,22 @@ gcloud run deploy edfs --source .
 - Single SARIMAX model per horizon, no per-region forecasting
 - No automated retraining trigger from the UI
 - No drift detection or prediction tracking — see Gridalytics for the production-grade version
+- The error metrics printed in the notebooks (MAPE roughly 0.3–5%) are computed after fitting SARIMAX on the full
+  series, including the evaluation window, with a one-step shift of the predictions. They are in-sample and
+  optimistic; Gridalytics re-did the evaluation leak-free.
+- The trained `.pkl` files and the raw demand data are not included in the repo.
+
+## Team
+
+Built for SIH 2024 by Rupesh Bharambe (team lead), Harshal More, Onkar Kalyankar, Sanket Sarode and Aniket Wahul.
+
+## Related repositories
+
+| Repository | Description |
+|------------|-------------|
+| **EDFS** (this repo) | SIH 2024 prototype: Flask + SARIMAX, Delhi demand at daily / hourly / 5-min resolution |
+| [Gridalytics](https://github.com/rupeshbharambe24/Gridalytics) | Successor: state-by-state demand forecasting with leak-free evaluation, FastAPI + Next.js |
+
+## License
+
+Released under the [MIT License](LICENSE).
